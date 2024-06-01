@@ -1,14 +1,17 @@
+####################################################################################################
 """
-catmull-rom.py
+PathGen.py
 
-A Python module for computing Catmull-Rom splines.This module provides functionality 
-for generating Catmull-Rom splines from a sequence of control points.
+A Python module for computing Catmull-Rom splines and quintic interpolated splines. This module 
+provides functionality for generating both types of splines from a list of control points. 
 
-Math retrieved from: https://qroph.github.io/2018/07/30/smooth-paths-using-catmull-rom-splines.html
-
+Math retrieved from:
+    https://qroph.github.io/2018/07/30/smooth-paths-using-catmull-rom-splines.html
+    https://rr.brott.dev/papers/Quintic_Splines_for_FTC.html#:~:text=(%20t%20)%20)%20.-,Interpolation,quintic%20polynomial%20for%20each%20component
 """
+
 import numpy as np
-import matplotlib.pyplot as plt
+import scipy as sp
 
 __all__ = ["CatmullRom"]
 
@@ -88,35 +91,3 @@ class CatmullRom :
             self.spline(*p_list, alpha, num_points) for p_list in point_quadruples
         ]
         return [pt for spline in splines for pt in spline]
-
-def generate_random_pts():
-    """
-    Returns a list of a random amount of random points.
-    :return: Points.
-    """
-
-    points = []
-    length = np.random.randint(5, 7)
-    for _ in range(length):
-        point = [np.random.randint(0, 12), np.random.randint(0, 12), np.random.randint(0, 12)]
-        points.append(point)
-    
-    # Convert the list of points to a NumPy array
-    points_array = np.array(points)
-    return points_array
-
-
-if __name__ == "__main__" :
-    control_points = generate_random_pts()
-    catmull_rom = CatmullRom()
-    curve = catmull_rom.spline_chain(control_points, alpha=0.5, num_points=100)
-
-    # Plot the result
-    curve_np = np.array(curve)
-    control_points_np = np.array(control_points)
-    fig = plt.figure()
-    ax = fig.add_subplot(111, projection='3d')
-    ax.plot(curve_np[:, 0], curve_np[:, 1], curve_np[:, 2], label="Catmull-Rom Spline")
-    ax.plot(control_points_np[:, 0], control_points_np[:, 1], control_points_np[:, 2], 'ro', label="Control Points")
-    plt.legend()
-    plt.show()
